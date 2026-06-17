@@ -41,7 +41,7 @@ function NewRequest() {
       }
       const { error } = await supabase.from("projects").insert({
         client_id: u.user.id,
-        service: String(fd.get("service")),
+        service: String(fd.get("service")) as "electrical",
         title: String(fd.get("title")),
         description: String(fd.get("description") || ""),
         location: String(fd.get("location") || ""),

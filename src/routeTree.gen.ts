@@ -13,6 +13,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEngineerIndexRouteImport } from './routes/_authenticated/engineer/index'
+import { Route as AuthenticatedClientIndexRouteImport } from './routes/_authenticated/client/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedClientNewRouteImport } from './routes/_authenticated/client/new'
+import { Route as AuthenticatedClientProjectIdRouteImport } from './routes/_authenticated/client/$projectId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -33,16 +38,54 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEngineerIndexRoute =
+  AuthenticatedEngineerIndexRouteImport.update({
+    id: '/engineer/',
+    path: '/engineer/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedClientIndexRoute =
+  AuthenticatedClientIndexRouteImport.update({
+    id: '/client/',
+    path: '/client/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClientNewRoute = AuthenticatedClientNewRouteImport.update({
+  id: '/client/new',
+  path: '/client/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClientProjectIdRoute =
+  AuthenticatedClientProjectIdRouteImport.update({
+    id: '/client/$projectId',
+    path: '/client/$projectId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/client/$projectId': typeof AuthenticatedClientProjectIdRoute
+  '/client/new': typeof AuthenticatedClientNewRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/client/': typeof AuthenticatedClientIndexRoute
+  '/engineer/': typeof AuthenticatedEngineerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/client/$projectId': typeof AuthenticatedClientProjectIdRoute
+  '/client/new': typeof AuthenticatedClientNewRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/client': typeof AuthenticatedClientIndexRoute
+  '/engineer': typeof AuthenticatedEngineerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,18 +93,44 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/client/$projectId': typeof AuthenticatedClientProjectIdRoute
+  '/_authenticated/client/new': typeof AuthenticatedClientNewRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/client/': typeof AuthenticatedClientIndexRoute
+  '/_authenticated/engineer/': typeof AuthenticatedEngineerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/client/$projectId'
+    | '/client/new'
+    | '/admin/'
+    | '/client/'
+    | '/engineer/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/client/$projectId'
+    | '/client/new'
+    | '/admin'
+    | '/client'
+    | '/engineer'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/client/$projectId'
+    | '/_authenticated/client/new'
+    | '/_authenticated/admin/'
+    | '/_authenticated/client/'
+    | '/_authenticated/engineer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,15 +169,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/engineer/': {
+      id: '/_authenticated/engineer/'
+      path: '/engineer'
+      fullPath: '/engineer/'
+      preLoaderRoute: typeof AuthenticatedEngineerIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/client/': {
+      id: '/_authenticated/client/'
+      path: '/client'
+      fullPath: '/client/'
+      preLoaderRoute: typeof AuthenticatedClientIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/client/new': {
+      id: '/_authenticated/client/new'
+      path: '/client/new'
+      fullPath: '/client/new'
+      preLoaderRoute: typeof AuthenticatedClientNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/client/$projectId': {
+      id: '/_authenticated/client/$projectId'
+      path: '/client/$projectId'
+      fullPath: '/client/$projectId'
+      preLoaderRoute: typeof AuthenticatedClientProjectIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedClientProjectIdRoute: typeof AuthenticatedClientProjectIdRoute
+  AuthenticatedClientNewRoute: typeof AuthenticatedClientNewRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedClientIndexRoute: typeof AuthenticatedClientIndexRoute
+  AuthenticatedEngineerIndexRoute: typeof AuthenticatedEngineerIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedClientProjectIdRoute: AuthenticatedClientProjectIdRoute,
+  AuthenticatedClientNewRoute: AuthenticatedClientNewRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedClientIndexRoute: AuthenticatedClientIndexRoute,
+  AuthenticatedEngineerIndexRoute: AuthenticatedEngineerIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

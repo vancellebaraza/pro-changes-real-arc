@@ -158,7 +158,7 @@ function QuotationEditor({ project, onSaved }: { project: Project; onSaved: () =
     try {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) throw new Error("Not signed in");
-      const payload = { project_id: project.id, engineer_id: u.user.id, vat_rate: vatRate, notes, subtotal, vat_amount: vatAmount, grand_total: grand, status: newStatus ?? status };
+      const payload = { project_id: project.id, engineer_id: u.user.id, vat_rate: vatRate, notes, subtotal, vat_amount: vatAmount, grand_total: grand, status: (newStatus ?? status) as "draft" };
       let qid = quoteId;
       if (qid) {
         const { error } = await supabase.from("quotations").update(payload).eq("id", qid);
@@ -171,12 +171,12 @@ function QuotationEditor({ project, onSaved }: { project: Project; onSaved: () =
       }
       await supabase.from("quotation_items").delete().eq("quotation_id", qid);
       if (items.length) {
-        const rows = items.map((it, idx) => ({ quotation_id: qid, description: it.description, qty: it.qty, unit_cost: it.unit_cost, amount: it.amount, actual_cost: it.actual_cost ?? null, sort_order: idx }));
+        const rows = items.map((it, idx) => ({ quotation_id: qid!, description: it.description, qty: it.qty, unit_cost: it.unit_cost, amount: it.amount, actual_cost: it.actual_cost ?? null, sort_order: idx }));
         const { error } = await supabase.from("quotation_items").insert(rows);
         if (error) throw error;
       }
       if (newStatus) setStatus(newStatus);
-      const newProjStatus = newStatus === "sent" ? "quoted" : project.status === "requested" ? "inspected" : project.status;
+      const newProjStatus = (newStatus === "sent" ? "quoted" : project.status === "requested" ? "inspected" : project.status) as "quoted";
       await supabase.from("projects").update({ status: newProjStatus }).eq("id", project.id);
       toast.success(newStatus === "sent" ? "Quotation sent to client" : "Saved");
       onSaved();
@@ -258,7 +258,7 @@ function InspectionEditor({ project, onSaved }: { project: Project; onSaved: () 
     if (!u.user) return;
     const { error } = await supabase.from("inspections").insert({ project_id: project.id, engineer_id: u.user.id, stage, checklist, remarks, flagged });
     if (error) return toast.error(error.message);
-    await supabase.from("projects").update({ status: project.status === "requested" ? "inspected" : project.status }).eq("id", project.id);
+    await supabase.from("projects").update({ status: (project.status === "requested" ? "inspected" : project.status) as "inspected" }).eq("id", project.id);
     toast.success("Inspection saved");
     onSaved();
   }
@@ -363,7 +363,7 @@ function WorkProgram({ project }: { project: Project }) {
     setTitle(""); setStart(""); setEnd(""); load();
   }
   async function setStatus(id: string, status: string) {
-    await supabase.from("work_tasks").update({ status }).eq("id", id);
+    await supabase.from("work_tasks").update({ status: status as "pending" }).eq("id", id);
     load();
   }
   async function del(id: string) { await supabase.from("work_tasks").delete().eq("id", id); load(); }

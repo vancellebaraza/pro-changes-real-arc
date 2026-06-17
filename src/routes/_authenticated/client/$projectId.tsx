@@ -34,7 +34,7 @@ function ProjectDetail() {
       setItems((it ?? []) as Item[]);
     }
     const { data: ins } = await supabase.from("inspections").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
-    setInspections((ins ?? []) as Inspection[]);
+    setInspections((ins ?? []) as unknown as Inspection[]);
     setLoading(false);
   }, [projectId]);
 
