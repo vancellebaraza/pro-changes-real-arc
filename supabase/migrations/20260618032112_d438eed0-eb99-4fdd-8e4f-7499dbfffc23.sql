@@ -62,6 +62,9 @@ CREATE TABLE IF NOT EXISTS public.whatsapp_logs (
   project_id uuid REFERENCES public.projects(id) ON DELETE CASCADE,
   sender_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   recipient text,
+  recipient_phone text,
+  message_type text,
+  meta jsonb,
   body text NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );

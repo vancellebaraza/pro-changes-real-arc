@@ -44,7 +44,7 @@ function MessagesPage() {
   async function logWa() {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    await supabase.from("whatsapp_logs").insert({ sender_id: u.user.id, project_id: projectId, body: decodeURIComponent(waMsg) });
+    await supabase.from("whatsapp_logs").insert({ sender_id: u.user.id, project_id: projectId, recipient: null, body: decodeURIComponent(waMsg) });
   }
 
   return (

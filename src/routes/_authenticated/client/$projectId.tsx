@@ -6,6 +6,7 @@ import { STATUS_LABEL, SERVICES } from "@/lib/services";
 import { toast } from "sonner";
 import { ArrowLeft, FileDown, MessageCircle, Check, X } from "lucide-react";
 import { generateQuotationPdf } from "@/lib/pdf";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export const Route = createFileRoute("/_authenticated/client/$projectId")({
   component: ProjectDetail,
@@ -72,7 +73,7 @@ function ProjectDetail() {
   if (loading) return <div className="p-8 text-sm text-muted-foreground">Loading…</div>;
   if (!project) return <div className="p-8 text-sm">Project not found.</div>;
   const svc = SERVICES.find((s) => s.key === project.service);
-  const waMsg = encodeURIComponent(`FusionPro — Project: ${project.title} (${STATUS_LABEL[project.status] ?? project.status}). Reference: ${project.id.slice(0,8)}`);
+  const waText = `FusionPro — Project: ${project.title} (${STATUS_LABEL[project.status] ?? project.status}). Reference: ${project.id.slice(0,8)}`;
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto fade-in">
@@ -85,9 +86,7 @@ function ProjectDetail() {
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mt-1">{project.title}</h1>
           <p className="text-muted-foreground mt-1">{project.location}</p>
         </div>
-        <a href={`https://wa.me/?text=${waMsg}`} target="_blank" rel="noreferrer">
-          <Button variant="outline"><MessageCircle className="h-4 w-4 mr-1" />WhatsApp</Button>
-        </a>
+        <WhatsAppButton projectId={project.id} recipientRole="engineer" messageType="custom" customMessage={waText} />
       </div>
 
       {project.description && <p className="mt-6 text-sm leading-relaxed">{project.description}</p>}

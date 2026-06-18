@@ -14,6 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export const Route = createFileRoute("/_authenticated/engineer/$projectId")({
   component: EngineerProjectHub,
@@ -57,7 +58,7 @@ function EngineerProjectHub() {
   if (!project) return <div className="p-8 text-sm">Project not found.</div>;
 
   const svc = SERVICES.find((s) => s.key === project.service);
-  const waMsg = encodeURIComponent(`FusionPro engineer here regarding "${project.title}" (Ref ${project.id.slice(0, 8)}). `);
+  const waText = `FusionPro engineer here regarding "${project.title}" (Ref ${project.id.slice(0, 8)}). `;
 
   async function logWa() {
     const { data: u } = await supabase.auth.getUser();
@@ -65,7 +66,7 @@ function EngineerProjectHub() {
     await supabase.from("whatsapp_logs").insert({
       sender_id: u.user.id,
       project_id: project!.id,
-      body: decodeURIComponent(waMsg),
+      body: waText,
     });
   }
 
@@ -98,9 +99,13 @@ function EngineerProjectHub() {
         </div>
         <div className="flex gap-2 flex-wrap">
           {!project.engineer_id && <Button size="sm" onClick={claim}>Assign to me</Button>}
-          <a href={`https://wa.me/?text=${waMsg}`} target="_blank" rel="noreferrer" onClick={logWa}>
-            <Button size="sm" variant="outline"><MessageCircle className="h-4 w-4 mr-1" />WhatsApp</Button>
-          </a>
+          <WhatsAppButton
+            projectId={project.id}
+            recipientRole="client"
+            messageType="custom"
+            customMessage={waText}
+            className=""
+          />
         </div>
       </div>
 

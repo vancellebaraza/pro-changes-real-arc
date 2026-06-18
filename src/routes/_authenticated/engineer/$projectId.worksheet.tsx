@@ -52,7 +52,7 @@ function WorksheetPage() {
       setTechnician(ws.technician ?? "");
       setPersonInCharge(ws.person_in_charge ?? "");
       setJobDescription(ws.job_description ?? "");
-      setObservations((ws.observations as Observation[]) ?? [{ observation: "", action: "" }]);
+      setObservations(((ws.observations as unknown) as Observation[]) ?? [{ observation: "", action: "" }]);
       setImagesBefore((ws.images_before as string[]) ?? []);
       const s = (ws.signatures ?? {}) as { technician_name?: string; supervisor_name?: string; client_name?: string };
       setSigTech(s.technician_name ?? "");
@@ -92,9 +92,9 @@ function WorksheetPage() {
         technician,
         person_in_charge: personInCharge,
         job_description: jobDescription,
-        observations: observations as Json,
-        images_before: imagesBefore as Json,
-        signatures: { technician_name: sigTech, supervisor_name: sigSup, client_name: sigClient } as Json,
+        observations: observations as unknown as Json,
+        images_before: imagesBefore as unknown as Json,
+        signatures: { technician_name: sigTech, supervisor_name: sigSup, client_name: sigClient } as unknown as Json,
       };
       if (worksheetId) {
         const { error } = await supabase.from("worksheets").update(payload).eq("id", worksheetId);
