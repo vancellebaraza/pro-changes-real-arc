@@ -1,6 +1,7 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { z } from "zod";
+ import { createServerFn } from "@tanstack/react-start";
+ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+ import { z } from "zod";
+ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ChatInput = z.object({
   message: z.string().min(1).max(2000),
@@ -86,27 +87,90 @@ RULES (strict):
 ${dbContext}
 === END DATA ===`;
 
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI is not configured.");
+    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+    if (!apiKey) throw new Error("AI is not configured. Please set GOOGLE_GEMINI_API_KEY environment variable.");
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: system },
-          ...data.history,
-          { role: "user", content: data.message },
-        ],
-      }),
-    });
-    if (res.status === 429) throw new Error("AI rate limit reached. Try again in a moment.");
-    if (res.status === 402) throw new Error("AI usage limit reached. Please add credits.");
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error(`AI error ${res.status}: ${t.slice(0, 200)}`);
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+
+      const messages = [
+        { role: "system", content: system },
+        ...data.history,
+        { role: "user", content: data.message },
+      ];
+
+      const geminiMessages = messages
+        .filter((m) => m.role !== "system")
+        .map((m) => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: m.content }],
+        }));
+
+      if (geminiMessages.length > 0 && geminiMessages[0].role === "user") {
+        geminiMessages[0].parts[0].text = system + "\n\n" + geminiMessages[0].parts[0].text;
+      }
+
+      const candidates = [
+        "models/gemini-3.5-flash",
+        "models/gemini-3.1-flash-lite",
+        "models/gemini-2.5-flash",
+        "models/gemini-2.0-flash",
+      ];
+
+      let lastError: unknown = null;
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      for (const candidate of candidates) {
+        let attempt = 0;
+        const maxAttempts = 3;
+        while (attempt < maxAttempts) {
+          try {
+            const model = genAI.getGenerativeModel({ model: candidate });
+            const chat = model.startChat({ history: geminiMessages.slice(0, -1) });
+            const result = await chat.sendMessage(
+              geminiMessages[geminiMessages.length - 1]?.parts[0]?.text || data.message
+            );
+            const reply = result.response.text();
+            return { reply, role };
+          } catch (err) {
+            lastError = err;
+            const msg = err instanceof Error ? err.message : String(err);
+            // Transient server errors: retry with exponential backoff
+            if (
+              msg.includes("503") ||
+              msg.toLowerCase().includes("high demand") ||
+              msg.toLowerCase().includes("service unavailable")
+            ) {
+              attempt++;
+              if (attempt < maxAttempts) {
+                const backoff = 1000 * Math.pow(2, attempt - 1);
+                await sleep(backoff);
+                continue; // retry same model
+              }
+              break; // move to next candidate after retries
+            }
+
+            // Model not found for this API/version: try next candidate
+            if (msg.includes("not found") || msg.includes("404") || msg.includes("is not found")) {
+              break;
+            }
+
+            // Other errors: surface immediately
+            throw err;
+          }
+        }
+        // try next candidate
+      }
+
+      const le = lastError instanceof Error ? lastError.message : String(lastError);
+      throw new Error(
+        `AI model not available or busy. Tried models: ${candidates.join(", ")}. Last error: ${le}`
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes("429")) throw new Error("AI rate limit reached. Try again in a moment.");
+        if (error.message.includes("402")) throw new Error("AI usage limit reached. Please add credits.");
+        throw new Error(`AI error: ${error.message}`);
+      }
+      throw new Error("Failed to get AI response");
     }
-    const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    return { reply: json.choices?.[0]?.message?.content ?? "", role };
   });
