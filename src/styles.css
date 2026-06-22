@@ -44,71 +44,61 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.99 0.002 80);          /* soft white */
-  --foreground: oklch(0.18 0.005 260);         /* near black */
-  --surface: oklch(0.97 0.003 80);             /* light grey UI surface */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.005 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.005 260);
-  --primary: oklch(0.22 0.005 260);            /* black-ish */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.96 0.003 80);
-  --secondary-foreground: oklch(0.22 0.005 260);
-  --muted: oklch(0.96 0.003 80);
-  --muted-foreground: oklch(0.5 0.01 260);
-  --accent: oklch(0.95 0.005 80);
-  --accent-foreground: oklch(0.22 0.005 260);
-  --brand: oklch(0.56 0.21 27);                /* FusionPro red */
+
+  /* ── Backgrounds ─────────────────────────────────────────── */
+  --background: oklch(0.99 0.003 80);           /* soft warm white */
+  --surface:    oklch(0.97 0.003 80);           /* slightly off-white surface */
+  --card:       oklch(1.00 0 0);                /* pure white cards */
+  --popover:    oklch(1.00 0 0);
+
+  /* ── Foregrounds ─────────────────────────────────────────── */
+  --foreground:         oklch(0.13 0.005 260);  /* near-black text */
+  --card-foreground:    oklch(0.13 0.005 260);
+  --popover-foreground: oklch(0.13 0.005 260);
+
+  /* ── Primary — FusionPro Crimson Red ─────────────────────── */
+  --primary:            oklch(0.52 0.22 27);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* ── Secondary / Muted ───────────────────────────────────── */
+  --secondary:            oklch(0.95 0.003 80);
+  --secondary-foreground: oklch(0.13 0.005 260);
+  --muted:                oklch(0.95 0.003 80);
+  --muted-foreground:     oklch(0.50 0.008 260);
+
+  /* ── Accent (hover tint) ─────────────────────────────────── */
+  --accent:            oklch(0.94 0.004 80);
+  --accent-foreground: oklch(0.13 0.005 260);
+
+  /* ── Brand ───────────────────────────────────────────────── */
+  --brand:            oklch(0.52 0.22 27);
   --brand-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.56 0.21 27);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 80);
-  --input: oklch(0.92 0.004 80);
-  --ring: oklch(0.56 0.21 27 / 0.4);
-  --chart-1: oklch(0.56 0.21 27);
-  --chart-2: oklch(0.45 0.02 260);
-  --chart-3: oklch(0.7 0.05 260);
+
+  /* ── Destructive ─────────────────────────────────────────── */
+  --destructive:            oklch(0.52 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* ── Borders / Inputs ────────────────────────────────────── */
+  --border: oklch(0.91 0.004 80);
+  --input:  oklch(0.91 0.004 80);
+  --ring:   oklch(0.52 0.22 27 / 0.45);
+
+  /* ── Charts ──────────────────────────────────────────────── */
+  --chart-1: oklch(0.52 0.22 27);
+  --chart-2: oklch(0.40 0.12 27);
+  --chart-3: oklch(0.70 0.05 260);
   --chart-4: oklch(0.82 0.01 260);
   --chart-5: oklch(0.35 0.02 260);
-  --sidebar: oklch(0.98 0.003 80);
-  --sidebar-foreground: oklch(0.22 0.005 260);
-  --sidebar-primary: oklch(0.56 0.21 27);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.005 80);
-  --sidebar-accent-foreground: oklch(0.22 0.005 260);
-  --sidebar-border: oklch(0.92 0.004 80);
-  --sidebar-ring: oklch(0.56 0.21 27 / 0.4);
-}
 
-.dark {
-  --background: oklch(0.15 0.005 260);
-  --foreground: oklch(0.98 0 0);
-  --surface: oklch(0.2 0.005 260);
-  --card: oklch(0.2 0.005 260);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.2 0.005 260);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0.18 0.005 260);
-  --secondary: oklch(0.25 0.005 260);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.25 0.005 260);
-  --muted-foreground: oklch(0.7 0.01 260);
-  --accent: oklch(0.25 0.005 260);
-  --accent-foreground: oklch(0.98 0 0);
-  --brand: oklch(0.62 0.22 27);
-  --brand-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.62 0.22 27 / 0.5);
-  --sidebar: oklch(0.18 0.005 260);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.62 0.22 27);
+  /* ── Sidebar — clean white ───────────────────────────────── */
+  --sidebar:                    oklch(0.98 0.003 80);
+  --sidebar-foreground:         oklch(0.25 0.005 260);
+  --sidebar-primary:            oklch(0.52 0.22 27);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.25 0.005 260);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-accent:             oklch(0.94 0.004 80);
+  --sidebar-accent-foreground:  oklch(0.13 0.005 260);
+  --sidebar-border:             oklch(0.91 0.004 80);
+  --sidebar-ring:               oklch(0.52 0.22 27 / 0.35);
 }
 
 @layer base {
@@ -125,9 +115,30 @@
 
 @layer components {
   .surface { background-color: var(--color-surface); }
+
+  /* Translucent glass panel */
+  .glass {
+    background: oklch(1 0 0 / 4%);
+    backdrop-filter: blur(12px);
+    border: 1px solid oklch(1 0 0 / 10%);
+  }
+
+  /* Fade-in animation */
   .fade-in { animation: fadeIn .4s ease both; }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Red glow pulse — used on auth hero panel */
+  .red-glow {
+    position: relative;
+  }
+  .red-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 30% 70%, oklch(0.56 0.21 27 / 0.18) 0%, transparent 70%);
+    pointer-events: none;
   }
 }
