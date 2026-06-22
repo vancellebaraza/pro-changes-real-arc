@@ -16,6 +16,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedEngineerIndexRouteImport } from './routes/_authenticated/engineer/index'
 import { Route as AuthenticatedClientIndexRouteImport } from './routes/_authenticated/client/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAccountantIndexRouteImport } from './routes/_authenticated/accountant/index'
 import { Route as AuthenticatedEngineerProjectIdRouteImport } from './routes/_authenticated/engineer/$projectId'
 import { Route as AuthenticatedClientNewRouteImport } from './routes/_authenticated/client/new'
 import { Route as AuthenticatedClientProjectIdRouteImport } from './routes/_authenticated/client/$projectId'
@@ -61,6 +62,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAccountantIndexRoute =
+  AuthenticatedAccountantIndexRouteImport.update({
+    id: '/accountant/',
+    path: '/accountant/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedEngineerProjectIdRoute =
   AuthenticatedEngineerProjectIdRouteImport.update({
     id: '/engineer/$projectId',
@@ -116,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/client/$projectId': typeof AuthenticatedClientProjectIdRoute
   '/client/new': typeof AuthenticatedClientNewRoute
   '/engineer/$projectId': typeof AuthenticatedEngineerProjectIdRouteWithChildren
+  '/accountant/': typeof AuthenticatedAccountantIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/client/': typeof AuthenticatedClientIndexRoute
   '/engineer/': typeof AuthenticatedEngineerIndexRoute
@@ -132,6 +140,7 @@ export interface FileRoutesByTo {
   '/client/$projectId': typeof AuthenticatedClientProjectIdRoute
   '/client/new': typeof AuthenticatedClientNewRoute
   '/engineer/$projectId': typeof AuthenticatedEngineerProjectIdRouteWithChildren
+  '/accountant': typeof AuthenticatedAccountantIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/client': typeof AuthenticatedClientIndexRoute
   '/engineer': typeof AuthenticatedEngineerIndexRoute
@@ -150,6 +159,7 @@ export interface FileRoutesById {
   '/_authenticated/client/$projectId': typeof AuthenticatedClientProjectIdRoute
   '/_authenticated/client/new': typeof AuthenticatedClientNewRoute
   '/_authenticated/engineer/$projectId': typeof AuthenticatedEngineerProjectIdRouteWithChildren
+  '/_authenticated/accountant/': typeof AuthenticatedAccountantIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/client/': typeof AuthenticatedClientIndexRoute
   '/_authenticated/engineer/': typeof AuthenticatedEngineerIndexRoute
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/client/$projectId'
     | '/client/new'
     | '/engineer/$projectId'
+    | '/accountant/'
     | '/admin/'
     | '/client/'
     | '/engineer/'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/client/$projectId'
     | '/client/new'
     | '/engineer/$projectId'
+    | '/accountant'
     | '/admin'
     | '/client'
     | '/engineer'
@@ -201,6 +213,7 @@ export interface FileRouteTypes {
     | '/_authenticated/client/$projectId'
     | '/_authenticated/client/new'
     | '/_authenticated/engineer/$projectId'
+    | '/_authenticated/accountant/'
     | '/_authenticated/admin/'
     | '/_authenticated/client/'
     | '/_authenticated/engineer/'
@@ -266,6 +279,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/accountant/': {
+      id: '/_authenticated/accountant/'
+      path: '/accountant'
+      fullPath: '/accountant/'
+      preLoaderRoute: typeof AuthenticatedAccountantIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/engineer/$projectId': {
@@ -359,6 +379,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClientProjectIdRoute: typeof AuthenticatedClientProjectIdRoute
   AuthenticatedClientNewRoute: typeof AuthenticatedClientNewRoute
   AuthenticatedEngineerProjectIdRoute: typeof AuthenticatedEngineerProjectIdRouteWithChildren
+  AuthenticatedAccountantIndexRoute: typeof AuthenticatedAccountantIndexRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedClientIndexRoute: typeof AuthenticatedClientIndexRoute
   AuthenticatedEngineerIndexRoute: typeof AuthenticatedEngineerIndexRoute
@@ -370,6 +391,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClientNewRoute: AuthenticatedClientNewRoute,
   AuthenticatedEngineerProjectIdRoute:
     AuthenticatedEngineerProjectIdRouteWithChildren,
+  AuthenticatedAccountantIndexRoute: AuthenticatedAccountantIndexRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedClientIndexRoute: AuthenticatedClientIndexRoute,
   AuthenticatedEngineerIndexRoute: AuthenticatedEngineerIndexRoute,

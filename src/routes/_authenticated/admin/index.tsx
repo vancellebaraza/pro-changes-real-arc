@@ -37,6 +37,12 @@ function AdminHome() {
     load();
   }
 
+  async function approveRequest(pid: string) {
+    await supabase.from("projects").update({ status: "admin_approved" }).eq("id", pid);
+    toast.success("Request approved and forwarded to Engineering");
+    load();
+  }
+
   async function schedule(p: Row) {
     const date = prompt("Schedule date (YYYY-MM-DD)", p.scheduled_date ?? "");
     if (!date) return;
@@ -65,9 +71,10 @@ function AdminHome() {
         <Button variant="outline" onClick={exportSheet}><FileDown className="h-4 w-4 mr-1"/>Export Work Data Sheet (CSV)</Button>
       </div>
 
-      <div className="mt-6 grid md:grid-cols-3 gap-4">
+      <div className="mt-6 grid md:grid-cols-4 gap-4">
         {[
           { label: "Total projects", value: rows.length },
+          { label: "New requests", value: rows.filter(r=>r.status==="requested").length },
           { label: "In progress", value: rows.filter(r=>r.status==="in_progress" || r.status==="scheduled").length },
           { label: "Pending quotes", value: pendingQuotes.length },
         ].map(s=>(
@@ -77,6 +84,23 @@ function AdminHome() {
           </div>
         ))}
       </div>
+
+      {rows.filter(r=>r.status==="requested").length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-lg font-semibold tracking-tight text-primary">New Client Requests (Pending Approval)</h2>
+          <ul className="mt-3 rounded-xl border bg-card divide-y">
+            {rows.filter(r=>r.status==="requested").map(r=>(
+              <li key={r.id} className="flex flex-wrap items-center justify-between gap-4 p-4 hover:bg-muted/30 transition-colors">
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{r.title}</div>
+                  <div className="text-sm text-muted-foreground">{SERVICES.find(s=>s.key===r.service)?.label ?? r.service} · {r.location ?? "No location"}</div>
+                </div>
+                <Button size="sm" onClick={()=>approveRequest(r.id)}><Check className="h-4 w-4 mr-1"/>Approve Request</Button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {pendingQuotes.length > 0 && (
         <section className="mt-8">

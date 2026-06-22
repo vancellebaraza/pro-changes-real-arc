@@ -25,6 +25,7 @@ export const SERVICES: Array<{ key: ServiceKey; label: string; icon: typeof Zap;
 
 export const STATUS_LABEL: Record<string, string> = {
   requested: "Requested",
+  admin_approved: "Admin Approved",
   inspected: "Inspected",
   quoted: "Quoted",
   approved: "Approved",

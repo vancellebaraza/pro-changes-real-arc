@@ -13,6 +13,12 @@ const FIXED_ACCOUNTS = [
     full_name: "FusionPro Field Engineer",
     role: "engineer" as const,
   },
+  {
+    email: "accountant2026@fusionpro.realarc.co.ke",
+    password: "accountant 2026",
+    full_name: "FusionPro Accountant",
+    role: "accountant" as const,
+  },
 ];
 
 export const ensureFixedAccounts = createServerFn({ method: "POST" }).handler(async () => {

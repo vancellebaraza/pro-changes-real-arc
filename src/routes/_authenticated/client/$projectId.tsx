@@ -89,6 +89,67 @@ function ProjectDetail() {
         <WhatsAppButton projectId={project.id} recipientRole="engineer" messageType="custom" customMessage={waText} />
       </div>
 
+      {/* Tracker UI */}
+      {(() => {
+        const statusLevels: Record<string, number> = {
+          requested: 1,
+          admin_approved: 2,
+          inspected: 3,
+          quoted: 4,
+          approved: 5,
+          scheduled: 6,
+          in_progress: 7,
+          completed: 8,
+          rejected: -1
+        };
+        const currentLevel = statusLevels[project.status] ?? 0;
+        const trackerSteps = [
+          { label: "Requested", levels: [1] },
+          { label: "Admin Approved", levels: [2] },
+          { label: "Quoted", levels: [3, 4] },
+          { label: "Client Approved", levels: [5] },
+          { label: "In Progress", levels: [6, 7] },
+          { label: "Completed", levels: [8] },
+        ];
+
+        if (currentLevel <= 0) return null;
+
+        return (
+          <div className="mt-10 mb-8 overflow-x-auto pb-8 hide-scrollbar">
+            <div className="flex items-center min-w-[600px] w-full px-4">
+              {trackerSteps.map((step, i) => {
+                const isPast = currentLevel > Math.max(...step.levels);
+                const isCurrent = step.levels.includes(currentLevel);
+                const isActive = isPast || isCurrent;
+                const isLast = i === trackerSteps.length - 1;
+                return (
+                  <div key={step.label} className={`flex items-center ${isLast ? '' : 'flex-1'}`}>
+                    <div className="relative flex flex-col items-center">
+                      <div className={`h-8 w-8 z-10 rounded-full flex items-center justify-center border-2 transition-colors ${isActive ? 'bg-primary border-primary text-primary-foreground' : 'bg-surface border-border text-muted-foreground'}`}>
+                        {isPast || (isCurrent && currentLevel === 8) ? <Check className="h-4 w-4" /> : <span className="text-xs">{i + 1}</span>}
+                      </div>
+                      <div className={`absolute top-10 text-xs font-medium whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {step.label}
+                      </div>
+                      {/* Pulse indicator for the active step */}
+                      {isCurrent && currentLevel < 8 && (
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                        </span>
+                      )}
+                    </div>
+                    {!isLast && (
+                      <div className={`flex-1 h-0.5 mx-2 transition-colors ${isPast ? 'bg-primary' : 'bg-border'}`} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
       {project.description && <p className="mt-6 text-sm leading-relaxed">{project.description}</p>}
 
       {project.image_urls.length > 0 && (

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMyRoles, signOutClean } from "@/lib/auth";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, ClipboardPlus, Wrench, ShieldCheck, Menu } from "lucide-react";
+import { LogOut, LayoutDashboard, ClipboardPlus, Wrench, ShieldCheck, Menu, Calculator } from "lucide-react";
 import { useState } from "react";
 import { AIAssistant } from "@/components/AIAssistant";
 
@@ -25,7 +25,9 @@ function AuthedLayout() {
 
   const links =
     primaryRole === "admin"
-      ? [{ to: "/admin", label: "Admin", icon: ShieldCheck }, { to: "/engineer", label: "Engineer view", icon: Wrench }, { to: "/client", label: "Client view", icon: ClipboardPlus }]
+      ? [{ to: "/admin", label: "Admin", icon: ShieldCheck }, { to: "/accountant", label: "Accountant view", icon: Calculator }, { to: "/engineer", label: "Engineer view", icon: Wrench }, { to: "/client", label: "Client view", icon: ClipboardPlus }]
+      : primaryRole === "accountant"
+        ? [{ to: "/accountant", label: "Accountant", icon: Calculator }]
       : primaryRole === "engineer"
         ? [{ to: "/engineer", label: "Engineer", icon: Wrench }]
         : [{ to: "/client", label: "My projects", icon: LayoutDashboard }, { to: "/client/new", label: "New request", icon: ClipboardPlus }];

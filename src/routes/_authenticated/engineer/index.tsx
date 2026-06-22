@@ -27,7 +27,11 @@ function EngineerHome() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from("projects").select("id,title,service,status,location,engineer_id,created_at,scheduled_date").order("created_at", { ascending: false });
+    const { data } = await supabase
+      .from("projects")
+      .select("id,title,service,status,location,engineer_id,created_at,scheduled_date")
+      .neq("status", "requested")
+      .order("created_at", { ascending: false });
     setProjects((data ?? []) as Project[]);
     setLoading(false);
   }, []);
